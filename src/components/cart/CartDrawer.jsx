@@ -78,8 +78,8 @@ export default function CartDrawer() {
                             className="w-20 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold"
                           />
                           <Button
-                            variant="ghost"
-                            className="px-3 py-2 text-rose-600 hover:bg-rose-50"
+                           
+                            className="px-3 py-2 text-red-600 hover:bg-rose-50"
                             onClick={() => remove(it.id)}
                           >
                             Remove

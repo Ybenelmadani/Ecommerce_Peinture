@@ -52,6 +52,7 @@ export default function Users() {
                   <th style={{ textAlign: "left" }}>Phone</th>
                   <th style={{ textAlign: "left" }}>Address</th>
                   <th style={{ textAlign: "left" }}>Change role</th>
+                 
                 </tr>
               </thead>
 
@@ -64,7 +65,7 @@ export default function Users() {
                     <td><span style={{ padding: "4px 10px", borderRadius: "999px", background: "#e2e8f0", fontWeight: 700, fontSize: "12px" }}>{u.role}</span></td>
                     <td>{u.phone || "-"}</td>
                     <td>{u.address || "-"}</td>
-                    <td>
+                    <td className=" d-flex">
                       <button
                         style={{ padding: "6px 10px", border: 0, borderRadius: "8px", background: "#f59e0b", color: "#fff", fontWeight: 700, marginRight: "8px" }}
                         onClick={() => changeRole(u.id, "user")}
@@ -80,6 +81,7 @@ export default function Users() {
                         Admin
                       </button>
                     </td>
+                  
                   </tr>
                 ))}
               </tbody>

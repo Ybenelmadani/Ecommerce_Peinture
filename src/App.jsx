@@ -12,6 +12,8 @@ import ProductDetails from "./pages/ProductDetails";
 import CartPage from "./pages/CartPage";
 import Checkout from "./pages/Checkout";
 import MyOrders from "./pages/MyOrders";
+import InfoPage from "./pages/InfoPage";
+import NotFound from "./pages/NotFound";
 
 // Auth pages
 import Login from "./pages/Login";
@@ -74,6 +76,7 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/info/:slug" element={<InfoPage />} />
 
         {/* =======================
             ADMIN ROUTES (PROTECTED + ROLE)
@@ -95,7 +98,7 @@ export default function App() {
           </Route>
 
       
-        <Route path="*" element={<div className="p-6">404 Not Found</div>} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
     </BrowserRouter>
