@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
 
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
@@ -29,32 +29,48 @@ import Dashboard from "./pages/admin/Dashboard";
 import Categories from "./pages/admin/Categories";
 import Brands from "./pages/admin/Brands";
 import ProductsAdmin from "./pages/admin/Products";
+import ProductForm from "./pages/admin/ProductForm";
 import Orders from "./pages/admin/Orders";
 import Users from "./pages/admin/Users";
 import Reviews from "./pages/admin/Reviews";
 import AdminRoute from "./routes/AdminRoute";
+import { useAuth } from "./context/AuthContext";
 
-export default function App() {
+function StoreOnlyRoute({ children }) {
+  const { user, booting } = useAuth();
+
+  if (booting) return null;
+
+  if (String(user?.role || "").toLowerCase() === "admin") {
+    return <Navigate to="/admin" replace />;
+  }
+
+  return children;
+}
+
+function AppContent() {
+  const loc = useLocation();
+  const isAdminArea = loc.pathname.startsWith("/admin");
+
   return (
-    <BrowserRouter>
-      {/* Global Layout */}
-      <Header />
-      <CartDrawer />
+    <>
+      {!isAdminArea && <Header />}
+      {!isAdminArea && <CartDrawer />}
 
       <Routes>
         {/* =======================
             PUBLIC STORE ROUTES
         ======================== */}
-        <Route path="/" element={<Home />} />
-        <Route path="/products" element={<Products />} />
-        <Route path="/products/:id" element={<ProductDetails />} />
-        <Route path="/cart" element={<CartPage />} />
+        <Route path="/" element={<StoreOnlyRoute><Home /></StoreOnlyRoute>} />
+        <Route path="/products" element={<StoreOnlyRoute><Products /></StoreOnlyRoute>} />
+        <Route path="/products/:id" element={<StoreOnlyRoute><ProductDetails /></StoreOnlyRoute>} />
+        <Route path="/cart" element={<StoreOnlyRoute><CartPage /></StoreOnlyRoute>} />
 
         {/* =======================
             AUTH ROUTES
         ======================== */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<StoreOnlyRoute><Login /></StoreOnlyRoute>} />
+        <Route path="/register" element={<StoreOnlyRoute><Register /></StoreOnlyRoute>} />
 
         {/* =======================
             PROTECTED STORE ROUTES
@@ -62,21 +78,25 @@ export default function App() {
         <Route
           path="/checkout"
           element={
-            <ProtectedRoute>
-              <Checkout />
-            </ProtectedRoute>
+            <StoreOnlyRoute>
+              <ProtectedRoute>
+                <Checkout />
+              </ProtectedRoute>
+            </StoreOnlyRoute>
           }
         />
 
         <Route
           path="/my-orders"
           element={
-            <ProtectedRoute>
-              <MyOrders />
-            </ProtectedRoute>
+            <StoreOnlyRoute>
+              <ProtectedRoute>
+                <MyOrders />
+              </ProtectedRoute>
+            </StoreOnlyRoute>
           }
         />
-        <Route path="/info/:slug" element={<InfoPage />} />
+        <Route path="/info/:slug" element={<StoreOnlyRoute><InfoPage /></StoreOnlyRoute>} />
 
         {/* =======================
             ADMIN ROUTES (PROTECTED + ROLE)
@@ -91,6 +111,8 @@ export default function App() {
           <Route path="categories" element={<Categories/>}/>
           <Route path="brands" element={<Brands/>}/>
           <Route path="products" element={<ProductsAdmin/>}/>
+          <Route path="products/new" element={<ProductForm/>}/>
+          <Route path="products/:id/edit" element={<ProductForm/>}/>
           <Route path="orders" element={<Orders/>}/>
           <Route path="users" element={<Users/>}/>
           <Route path="reviews" element={<Reviews/>}/>
@@ -100,7 +122,15 @@ export default function App() {
       
         <Route path="*" element={<NotFound />} />
       </Routes>
-      <Footer />
+      {!isAdminArea && <Footer />}
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
     </BrowserRouter>
   );
 }

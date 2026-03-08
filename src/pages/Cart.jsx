@@ -4,6 +4,7 @@ import Container from "../components/layout/Container";
 import Button from "../components/ui/Button";
 import Price from "../components/ui/Price";
 import { useCart } from "../context/CartContext";
+import { resolveMediaUrl } from "../utils/media";
 
 export default function Cart() {
   const nav = useNavigate();
@@ -32,7 +33,7 @@ export default function Cart() {
                 <div className="min-w-[90px] h-[70px] rounded-xl bg-slate-100 overflow-hidden">
                   {/* image depuis product */}
                   {it.variant?.product?.images?.[0]?.image_path ? (
-                    <img src={it.variant.product.images[0].image_path} alt="" className="w-full h-full object-cover" />
+                    <img src={resolveMediaUrl(it.variant.product.images[0].image_path)} alt="" className="w-full h-full object-cover" />
                   ) : null}
                 </div>
 

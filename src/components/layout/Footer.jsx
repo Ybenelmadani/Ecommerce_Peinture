@@ -54,7 +54,7 @@ export default function Footer() {
   ];
 
   const moreLinks = [
-    { label: "About ArtStore", to: "/info/about-artstore" },
+    { label: "About Adwart", to: "/info/about-artstore" },
     { label: "Art blog", to: "/info/art-blog" },
     { label: "Publications", to: "/info/publications" },
     { label: "Art classes", to: "/info/art-classes" },
@@ -75,20 +75,20 @@ export default function Footer() {
       <Container className="py-12 md:py-14">
         <div className="grid gap-10 border-b border-white/25 pb-10 md:grid-cols-2 md:gap-16">
           <div>
-            <h3 className="text-xl font-black uppercase tracking-[0.25em]">Be In The Know</h3>
-            <p className="mt-2 text-lg text-white/80">Get art material inspiration and exclusive offers.</p>
+            <h3 className="text-lg font-black uppercase tracking-[0.16em]">Be In The Know</h3>
+            <p className="mt-2 text-base text-white/80">Get art material inspiration and exclusive offers.</p>
             <form onSubmit={handleSignup} className="mt-6 flex flex-col gap-3 sm:flex-row">
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Email address"
-                className="h-14 w-full border border-white/70 bg-white px-5 text-xl text-black outline-none"
+                className="h-12 w-full rounded-md border border-white/70 bg-white px-4 text-base text-black outline-none"
                 aria-label="Email address"
               />
               <button
                 type="submit"
-                className="h-14 min-w-[190px] border border-white/70 bg-black px-6 text-xl font-extrabold uppercase tracking-[0.16em] hover:bg-white hover:text-black"
+                className="h-12 min-w-[170px] rounded-md border border-white/70 bg-black px-5 text-base font-extrabold uppercase tracking-[0.12em] hover:bg-white hover:text-black"
               >
                 Sign Up
               </button>
@@ -97,8 +97,8 @@ export default function Footer() {
           </div>
 
           <div>
-            <h3 className="text-xl font-black uppercase tracking-[0.25em]">Join The Community</h3>
-            <p className="mt-2 text-lg text-white/80">Connect with artists via our social media.</p>
+            <h3 className="text-lg font-black uppercase tracking-[0.16em]">Join The Community</h3>
+            <p className="mt-2 text-base text-white/80">Connect with artists via our social media.</p>
             <div className="mt-6 flex flex-wrap items-center gap-4">
               {socialLinks.map(({ label, href, icon: Icon }) => (
                 <a
@@ -106,10 +106,10 @@ export default function Footer() {
                   href={href}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex h-14 w-14 items-center justify-center rounded-full border border-white/70 text-white transition hover:bg-white hover:text-black"
+                  className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/70 text-white transition hover:bg-white hover:text-black"
                   aria-label={label}
                 >
-                  <Icon size={24} />
+                  <Icon size={20} />
                 </a>
               ))}
             </div>
@@ -118,11 +118,11 @@ export default function Footer() {
 
         <div className="grid grid-cols-1 gap-8 py-10 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <h4 className="text-3xl font-black uppercase tracking-[0.11em]">Help</h4>
+            <h4 className="text-lg font-black uppercase tracking-[0.08em]">Help</h4>
             <ul className="mt-5 space-y-2">
               {helpLinks.map((item) => (
                 <li key={item.label}>
-                  <Link to={item.to} className="text-xl uppercase tracking-[0.08em] text-white/85 hover:text-white">
+                  <Link to={item.to} className="text-sm text-white/85 hover:text-white">
                     {item.label}
                   </Link>
                 </li>
@@ -131,11 +131,11 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="text-3xl font-black uppercase tracking-[0.11em]">Shopping</h4>
+            <h4 className="text-lg font-black uppercase tracking-[0.08em]">Shopping</h4>
             <ul className="mt-5 space-y-2">
               {shoppingLinks.map((item) => (
                 <li key={item.label}>
-                  <Link to={item.to} className="text-xl uppercase tracking-[0.08em] text-white/85 hover:text-white">
+                  <Link to={item.to} className="text-sm text-white/85 hover:text-white">
                     {item.label}
                   </Link>
                 </li>
@@ -144,11 +144,11 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="text-3xl font-black uppercase tracking-[0.11em]">Partnerships</h4>
+            <h4 className="text-lg font-black uppercase tracking-[0.08em]">Partnerships</h4>
             <ul className="mt-5 space-y-2">
               {partnershipLinks.map((item) => (
                 <li key={item.label}>
-                  <Link to={item.to} className="text-xl uppercase tracking-[0.08em] text-white/85 hover:text-white">
+                  <Link to={item.to} className="text-sm text-white/85 hover:text-white">
                     {item.label}
                   </Link>
                 </li>
@@ -157,11 +157,11 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="text-3xl font-black uppercase tracking-[0.11em]">More From ArtStore</h4>
+            <h4 className="text-lg font-black uppercase tracking-[0.08em]">More From Adwart</h4>
             <ul className="mt-5 space-y-2">
               {moreLinks.map((item) => (
                 <li key={item.label}>
-                  <Link to={item.to} className="text-xl uppercase tracking-[0.08em] text-white/85 hover:text-white">
+                  <Link to={item.to} className="text-sm text-white/85 hover:text-white">
                     {item.label}
                   </Link>
                 </li>
@@ -171,8 +171,8 @@ export default function Footer() {
         </div>
 
         <div className="flex flex-col gap-8 border-t border-white/25 pt-7 md:flex-row md:items-end md:justify-between">
-          <div className="space-y-2 text-lg text-white/80">
-            <div className="uppercase tracking-[0.14em]">
+          <div className="space-y-2 text-sm text-white/80">
+            <div className="tracking-[0.06em]">
               <Link className="hover:text-white" to="/info/terms-conditions">
                 T&amp;Cs
               </Link>{" "}
@@ -185,11 +185,11 @@ export default function Footer() {
                 Cookie Policy
               </Link>
             </div>
-            <p className="uppercase tracking-[0.08em]">© ArtStore 2026</p>
-            <p className="uppercase tracking-[0.08em]">Customer Service: +212 6 12 34 56 78 | 9AM - 6PM Mon - Fri</p>
-            <p className="uppercase tracking-[0.08em]">Casablanca, Morocco</p>
+            <p className="tracking-[0.04em]">&copy; Adwart 2026</p>
+            <p className="tracking-[0.04em]">Customer Service: +212 6 12 34 56 78 | 9AM - 6PM Mon - Fri</p>
+            <p className="tracking-[0.04em]">Casablanca, Morocco</p>
           </div>
-          <div className="text-5xl font-black italic tracking-tight">ArtStore</div>
+          <div className="text-4xl font-black italic tracking-tight">Adwart</div>
         </div>
       </Container>
 

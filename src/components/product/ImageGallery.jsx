@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import { resolveMediaUrl } from "../../utils/media";
 
 export default function ImageGallery({ images = [] }) {
   const ordered = useMemo(() => {
@@ -7,7 +8,7 @@ export default function ImageGallery({ images = [] }) {
     return main ? [main, ...rest] : images;
   }, [images]);
 
-  const [active, setActive] = useState(ordered[0]?.image_path);
+  const [active, setActive] = useState(resolveMediaUrl(ordered[0]?.image_path));
 
   return (
     <div className="grid gap-3">
@@ -23,10 +24,12 @@ export default function ImageGallery({ images = [] }) {
         {ordered.map(img => (
           <button
             key={img.id}
-            onClick={() => setActive(img.image_path)}
-            className={`h-16 w-20 rounded-xl border overflow-hidden ${active === img.image_path ? "border-slate-900" : "border-slate-200"}`}
+            onClick={() => setActive(resolveMediaUrl(img.image_path))}
+            className={`h-16 w-20 rounded-xl border overflow-hidden ${
+              active === resolveMediaUrl(img.image_path) ? "border-slate-900" : "border-slate-200"
+            }`}
           >
-            <img src={img.image_path} alt="" className="h-full w-full object-cover" />
+            <img src={resolveMediaUrl(img.image_path)} alt="" className="h-full w-full object-cover" />
           </button>
         ))}
       </div>

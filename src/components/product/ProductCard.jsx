@@ -4,12 +4,15 @@ import { Eye, ShoppingCart } from "lucide-react";
 import Button from "../ui/Button";
 import { useCart } from "../../context/CartContext";
 import { CatalogAPI } from "../../api/catalog";
+import { resolveMediaUrl } from "../../utils/media";
 
 export default function ProductCard({ p }) {
   const { add } = useCart();
   const [adding, setAdding] = useState(false);
 
-  const mainImg = p.images?.find((i) => i.is_main)?.image_path || p.images?.[0]?.image_path;
+  const mainImg = resolveMediaUrl(
+    p.images?.find((i) => i.is_main)?.image_path || p.images?.[0]?.image_path
+  );
   const firstAvailableVariant = p.variants?.find((v) => Number(v.stock) > 0) || p.variants?.[0] || null;
 
   const resolveVariantId = async () => {

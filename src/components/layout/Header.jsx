@@ -4,6 +4,7 @@ import { ChevronRight, Search, ShoppingBag } from "lucide-react";
 import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
 import { CatalogAPI } from "../../api/catalog";
+import logoFinal from "../../assets/logo-adwart-final.svg";
 
 const MENU_ITEMS = ["Color", "Surface", "Brushes", "Studio", "Brands", "Gifts", "Offers"];
 
@@ -100,12 +101,23 @@ export default function Header() {
       className="sticky top-0 z-50 border-b border-slate-200 bg-white"
       onMouseLeave={() => setActiveMenu(null)}
     >
-      <div className="mx-auto flex h-[66px] max-w-[1380px] items-center gap-4 px-4 md:px-6">
-        <Link to="/" className="min-w-[120px] text-2xl md:text-3xl font-black italic tracking-tight text-slate-900">
-          ArtStore
+      <div className="mx-auto flex h-[66px] w-full max-w-[1380px] min-w-0 items-center gap-3 overflow-hidden px-3 md:px-5">
+        <Link to="/" className="shrink-0 min-w-[120px] md:min-w-[150px] rounded-xl border border-slate-200 bg-slate-50 px-2 py-1">
+          <img
+            src={logoFinal}
+            alt="Adwart"
+            className="h-9 w-auto md:h-10"
+            style={{ filter: "saturate(1.25) contrast(1.15)" }}
+            onError={(e) => {
+              e.currentTarget.style.display = "none";
+              const fallback = e.currentTarget.nextElementSibling;
+              if (fallback) fallback.style.display = "inline-block";
+            }}
+          />
+          <span className="hidden text-2xl md:text-3xl font-black italic tracking-tight text-slate-900">Adwart</span>
         </Link>
 
-        <nav className="hidden items-center gap-6 md:flex">
+        <nav className="hidden min-w-0 items-center gap-3 lg:gap-4 xl:gap-6 md:flex">
           {MENU_ITEMS.map((item) => (
             <button
               key={item}
@@ -122,7 +134,7 @@ export default function Header() {
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
-          <div className="relative hidden w-[300px] lg:block xl:w-[380px]">
+          <div className="relative hidden w-[240px] lg:block xl:w-[320px]">
             <input
               type="text"
               placeholder="Search art materials"
@@ -141,12 +153,22 @@ export default function Header() {
           </div>
 
           {user ? (
-            <button
-              onClick={logout}
-              className="hidden rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 lg:inline-flex"
-            >
-              Logout
-            </button>
+            <>
+              {String(user?.role || "").toLowerCase() === "admin" && (
+                <Link
+                  to="/admin"
+                  className="hidden rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 lg:inline-flex"
+                >
+                  Admin
+                </Link>
+              )}
+              <button
+                onClick={logout}
+                className="hidden rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 lg:inline-flex"
+              >
+                Logout
+              </button>
+            </>
           ) : (
             <Link
               to="/login"

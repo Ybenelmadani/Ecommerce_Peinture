@@ -2,6 +2,7 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
+import { resolveMediaUrl } from "../utils/media";
 
 export default function CartPage() {
   const nav = useNavigate();
@@ -48,8 +49,10 @@ export default function CartPage() {
             items.map((it) => {
               const p = it.variant?.product;
               const img =
-                p?.images?.find((i) => i.is_main)?.image_path ||
-                p?.images?.[0]?.image_path;
+                resolveMediaUrl(
+                  p?.images?.find((i) => i.is_main)?.image_path ||
+                  p?.images?.[0]?.image_path
+                );
 
               return (
                 <div

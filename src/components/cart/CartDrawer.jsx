@@ -4,6 +4,7 @@ import { X } from "lucide-react";
 import Button from "../ui/Button";
 import Price from "../ui/Price";
 import { useCart } from "../../context/CartContext";
+import { resolveMediaUrl } from "../../utils/media";
 
 export default function CartDrawer() {
   const nav = useNavigate();
@@ -46,7 +47,9 @@ export default function CartDrawer() {
             <div className="space-y-6">
               {items.map((it) => {
                 const p = it.variant?.product;
-                const img = p?.images?.find((i) => i.is_main)?.image_path || p?.images?.[0]?.image_path;
+                const img = resolveMediaUrl(
+                  p?.images?.find((i) => i.is_main)?.image_path || p?.images?.[0]?.image_path
+                );
                 const subtitle = [it.variant?.color, it.variant?.finish, it.variant?.capacity].filter(Boolean).join(" | ");
 
                 return (

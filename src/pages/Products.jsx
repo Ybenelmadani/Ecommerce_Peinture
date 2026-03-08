@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import Container from "../components/layout/Container";
 import Input from "../components/ui/Input";
@@ -6,13 +6,43 @@ import Button from "../components/ui/Button";
 import ProductCard from "../components/product/ProductCard";
 import { CatalogAPI } from "../api/catalog";
 
+const PAGE_SIZE = 24;
+
+function mixProductsByBrand(list) {
+  const buckets = new Map();
+
+  list.forEach((item) => {
+    const key = String(item?.brand?.id ?? item?.brand_id ?? "no-brand");
+    if (!buckets.has(key)) buckets.set(key, []);
+    buckets.get(key).push(item);
+  });
+
+  const groups = Array.from(buckets.values()).sort((a, b) => b.length - a.length);
+  const mixed = [];
+
+  while (groups.some((g) => g.length > 0)) {
+    for (const g of groups) {
+      if (g.length > 0) mixed.push(g.shift());
+    }
+  }
+
+  return mixed;
+}
+
 export default function Products() {
   const [sp, setSp] = useSearchParams();
   const [products, setProducts] = useState([]);
   const [cats, setCats] = useState([]);
   const [brands, setBrands] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [apiError, setApiError] = useState("");
+  const [pageInfo, setPageInfo] = useState({
+    current_page: 1,
+    last_page: 1,
+    total: 0,
+  });
+  const loadMoreRef = useRef(null);
 
   const category_id = sp.get("category_id") || "";
   const brand_id = sp.get("brand_id") || "";
@@ -23,33 +53,60 @@ export default function Products() {
     CatalogAPI.brands().then(setBrands).catch(() => {});
   }, []);
 
-  useEffect(() => {
-    setLoading(true);
-    setApiError("");
+  const loadPage = async (page, append = false) => {
+    if (append) setLoadingMore(true);
+    else setLoading(true);
+    if (!append) setApiError("");
 
-    CatalogAPI.products({ category_id: category_id || undefined, brand_id: brand_id || undefined })
-      .then((data) => {
-        setProducts(Array.isArray(data) ? data : []);
-      })
-      .catch(() => {
-        setProducts([]);
-        setApiError("Unable to load products. Check backend API connection.");
-      })
-      .finally(() => {
-        setLoading(false);
+    try {
+      const data = await CatalogAPI.productsPage({
+        category_id: category_id || undefined,
+        brand_id: brand_id || undefined,
+        q: q.trim() || undefined,
+        page,
+        per_page: PAGE_SIZE,
       });
-  }, [category_id, brand_id]);
+      const items = Array.isArray(data?.data) ? data.data : [];
 
-  const filtered = useMemo(() => {
-    if (!q.trim()) return products;
-    const t = q.toLowerCase();
-    return products.filter(
-      (p) =>
-        (p.name || "").toLowerCase().includes(t) ||
-        (p.brand?.name || "").toLowerCase().includes(t) ||
-        (p.category?.name || "").toLowerCase().includes(t)
+      setProducts((prev) => (append ? [...prev, ...items] : items));
+      setPageInfo({
+        current_page: Number(data?.current_page) || page,
+        last_page: Number(data?.last_page) || 1,
+        total: Number(data?.total) || items.length,
+      });
+    } catch {
+      if (!append) setProducts([]);
+      setApiError("Unable to load products. Check backend API connection.");
+    } finally {
+      setLoading(false);
+      setLoadingMore(false);
+    }
+  };
+
+  useEffect(() => {
+    loadPage(1, false);
+  }, [category_id, brand_id, q]);
+
+  useEffect(() => {
+    const node = loadMoreRef.current;
+    if (!node) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const first = entries[0];
+        const hasMore = pageInfo.current_page < pageInfo.last_page;
+        if (first.isIntersecting && hasMore && !loading && !loadingMore && !apiError) {
+          loadPage(pageInfo.current_page + 1, true);
+        }
+      },
+      { rootMargin: "220px" }
     );
-  }, [products, q]);
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [pageInfo.current_page, pageInfo.last_page, loading, loadingMore, apiError]);
+
+  const mixedProducts = useMemo(() => mixProductsByBrand(products), [products]);
 
   return (
     <Container className="py-10">
@@ -135,12 +192,18 @@ export default function Products() {
 
           {!loading && !apiError && (
             <>
+              <div className="mb-4 text-sm text-slate-500">
+                Showing {products.length} of {pageInfo.total} products
+              </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                {filtered.map((p) => (
+                {mixedProducts.map((p) => (
                   <ProductCard key={p.id} p={p} />
                 ))}
               </div>
-              {filtered.length === 0 && <div className="mt-10 text-center text-slate-500">No products found.</div>}
+              {products.length === 0 && <div className="mt-10 text-center text-slate-500">No products found.</div>}
+
+              {loadingMore && <div className="mt-8 text-center text-slate-500">Loading more products...</div>}
+              <div ref={loadMoreRef} className="h-1" />
             </>
           )}
         </main>
