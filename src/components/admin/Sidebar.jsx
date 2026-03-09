@@ -1,6 +1,8 @@
 import { NavLink } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Sidebar(){
+    const { logout } = useAuth();
 
     const linkBaseStyle = {
     display: "block",
@@ -19,12 +21,14 @@ export default function Sidebar(){
     background:"linear-gradient(180deg, #0f172a 0%, #1e293b 100%)",
     color:"#fff",
     padding:"18px 12px",
-    minHeight:"100vh"
+    minHeight:"100vh",
+    display:"flex",
+    flexDirection:"column"
     }}>
 
     <h2 style={{margin:"0 8px 14px",fontSize:"21px",fontWeight:900,letterSpacing:"0.01em"}}>Admin</h2>
 
-        <nav style={{display:"flex",flexDirection:"column",gap:"4px"}}>
+        <nav style={{display:"flex",flexDirection:"column",gap:"4px",flex:1}}>
 
             <NavLink to="/admin" style={({isActive})=>({
             ...linkBaseStyle,
@@ -70,6 +74,24 @@ export default function Sidebar(){
 
         
         </nav>
+
+        <button
+          type="button"
+          onClick={logout}
+          style={{
+            marginTop:"14px",
+            width:"100%",
+            padding:"10px 12px",
+            borderRadius:"10px",
+            border:"1px solid rgba(148, 163, 184, 0.35)",
+            background:"#0b132d",
+            color:"#f8fafc",
+            fontWeight:700,
+            cursor:"pointer"
+          }}
+        >
+          Logout
+        </button>
 
     </div>
 
