@@ -14,7 +14,7 @@ export function resolveMediaUrl(rawUrl) {
   const apiOrigin = getApiOrigin();
   if (!apiOrigin) return url;
 
-  // Relative media path from backend public folder.
+  
   if (url.startsWith("/")) {
     return `${apiOrigin}${url}`;
   }

@@ -45,7 +45,7 @@ export default function ProductCard({ p }) {
   };
 
   return (
-    <div className="group rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm hover:shadow-md transition">
+    <div className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md">
       <div className="relative">
         <Link to={`/products/${p.id}`} className="block">
           <div className="aspect-[4/3] bg-slate-100 overflow-hidden">
@@ -53,7 +53,7 @@ export default function ProductCard({ p }) {
               <img
                 src={mainImg}
                 alt={p.name}
-                className="h-full w-full object-cover group-hover:scale-[1.03] transition"
+                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
               />
             ) : (
               <div className="h-full w-full flex items-center justify-center text-slate-400 text-sm">No image</div>
@@ -64,7 +64,7 @@ export default function ProductCard({ p }) {
         <Link
           to={`/products/${p.id}`}
           aria-label={`View ${p.name}`}
-          className="absolute top-3 right-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white/95 text-slate-700 shadow-sm transition hover:bg-slate-900 hover:text-white"
+          className="absolute right-3 top-3 z-10 inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white/95 text-slate-700 shadow-sm transition-colors hover:bg-slate-900 hover:text-white"
         >
           <Eye size={17} />
         </Link>
