@@ -1,91 +1,185 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Container from "../components/layout/Container";
-import Button from "../components/ui/Button";
-import Price from "../components/ui/Price";
+import { Minus, Plus, Trash2 } from "lucide-react";
 import { useCart } from "../context/CartContext";
+import { formatEuro } from "../utils/currency";
 import { resolveMediaUrl } from "../utils/media";
+
+const SHIPPING_FEE = 7.9;
+
+function getProductImage(item) {
+  const product = item.variant?.product;
+  const mainImage = product?.images?.find((image) => image.is_main)?.image_path;
+  return resolveMediaUrl(mainImage || product?.images?.[0]?.image_path);
+}
+
+function getVariantLabel(item) {
+  return [item.variant?.color, item.variant?.finish, item.variant?.capacity].filter(Boolean).join(" | ");
+}
 
 export default function Cart() {
   const nav = useNavigate();
-  const { items, total, updateQty, remove, clear } = useCart();
+  const { items, total, loading, updateQty, remove, clear } = useCart();
+
+  const articleCount = useMemo(
+    () => items.reduce((sum, item) => sum + Number(item.quantity || 0), 0),
+    [items]
+  );
+
+  const shipping = items.length > 0 ? SHIPPING_FEE : 0;
+  const grandTotal = total + shipping;
 
   return (
-    <Container className="py-10">
-      <div className="flex items-end justify-between">
-        <div>
-          <h1 className="text-3xl font-black">Cart</h1>
-          <p className="text-sm text-slate-600 mt-1">Review your items.</p>
+    <div className="min-h-[calc(100vh-140px)] bg-[#f6f4f1]">
+      <div className="mx-auto max-w-[1320px] px-4 py-6 sm:px-6 lg:px-6 lg:py-9">
+        <div className="mb-8 text-center lg:mb-12">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.55em] text-slate-500">Panier d'achat</p>
         </div>
-        <Button variant="soft" onClick={clear}>Clear</Button>
+
+        {loading ? (
+          <div className="rounded-[28px] border border-black/5 bg-white px-6 py-12 text-center text-slate-500 shadow-[0_18px_45px_rgba(15,23,42,0.05)]">
+            Chargement du panier...
+          </div>
+        ) : items.length === 0 ? (
+          <div className="rounded-[28px] border border-black/5 bg-white px-6 py-12 text-center shadow-[0_18px_45px_rgba(15,23,42,0.05)]">
+            <p className="text-lg font-semibold text-slate-800">Votre panier est vide.</p>
+            <Link
+              to="/products"
+              className="mt-6 inline-flex min-h-[56px] items-center justify-center rounded-[16px] bg-[#2f2d31] px-8 text-sm font-semibold uppercase tracking-wide text-white transition hover:bg-[#232126]"
+            >
+              Continuer vos achats
+            </Link>
+          </div>
+        ) : (
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-7">
+            <section className="min-w-0">
+              <div className="rounded-[22px] border border-black/5 bg-white/90 px-4 py-3 shadow-[0_14px_36px_rgba(15,23,42,0.05)] sm:px-5 sm:py-3.5">
+                {items.map((item, index) => {
+                  const image = getProductImage(item);
+                  const variantLabel = getVariantLabel(item);
+                  const lineTotal = Number(item.unit_price || 0) * Number(item.quantity || 0);
+
+                  return (
+                    <div
+                      key={item.id}
+                      className={`grid gap-3 py-3.5 md:grid-cols-[96px_minmax(0,1fr)_90px_112px_34px] md:items-center ${
+                        index !== 0 ? "border-t border-black/10" : ""
+                      }`}
+                    >
+                      <div className="overflow-hidden rounded-[15px] bg-[#f2efea]">
+                        {image ? (
+                          <img src={image} alt={item.variant?.product?.name || "Produit"} className="h-20 w-full object-contain p-2 sm:h-24" />
+                        ) : (
+                          <div className="flex h-20 items-center justify-center text-sm font-medium text-slate-400 sm:h-24">
+                            No image
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="min-w-0">
+                        <h2 className="max-w-[18ch] text-sm font-semibold uppercase leading-[1.5] text-slate-900 sm:text-[15px]">
+                          {item.variant?.product?.name || "Produit"}
+                        </h2>
+                        {variantLabel ? (
+                          <p className="mt-2 text-xs uppercase tracking-[0.18em] text-slate-400">{variantLabel}</p>
+                        ) : null}
+                        <p className="mt-2.5 text-base font-semibold leading-none text-slate-950">
+                          {formatEuro(item.unit_price)}
+                        </p>
+                      </div>
+
+                      <div className="flex justify-start md:justify-center">
+                        <div className="flex h-[48px] w-[90px] items-center justify-between rounded-full border border-black/10 px-2">
+                          <button
+                            type="button"
+                            onClick={() => updateQty(item.id, Math.max(1, item.quantity - 1))}
+                            className="inline-flex h-6 w-6 items-center justify-center rounded-full text-slate-500 transition hover:bg-white hover:text-slate-900"
+                            aria-label={`Diminuer la quantite de ${item.variant?.product?.name || "ce produit"}`}
+                          >
+                            <Minus size={13} />
+                          </button>
+                          <span className="text-base font-semibold text-slate-800">{item.quantity}</span>
+                          <button
+                            type="button"
+                            onClick={() => updateQty(item.id, item.quantity + 1)}
+                            className="inline-flex h-6 w-6 items-center justify-center rounded-full text-slate-500 transition hover:bg-white hover:text-slate-900"
+                            aria-label={`Augmenter la quantite de ${item.variant?.product?.name || "ce produit"}`}
+                          >
+                            <Plus size={13} />
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="text-left md:text-center">
+                        <p className="text-base font-semibold text-slate-800 sm:text-[1.5rem]">{formatEuro(lineTotal)}</p>
+                      </div>
+
+                      <div className="flex md:justify-end">
+                        <button
+                          type="button"
+                          onClick={() => remove(item.id)}
+                          className="inline-flex h-8 w-8 items-center justify-center rounded-full text-red-500 transition hover:bg-red-50 hover:text-red-600"
+                          aria-label={`Supprimer ${item.variant?.product?.name || "ce produit"}`}
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+                <Link
+                  to="/products"
+                  className="inline-flex min-h-[48px] items-center justify-center rounded-[14px] bg-[#e8e5e1] px-6 text-sm font-semibold uppercase tracking-wide text-slate-900 transition hover:bg-[#dcd8d2]"
+                >
+                  Continuer vos achats
+                </Link>
+                <button
+                  type="button"
+                  onClick={clear}
+                  className="inline-flex min-h-[48px] items-center justify-center rounded-[14px] border border-black/10 px-6 text-sm font-semibold uppercase tracking-wide text-slate-600 transition hover:bg-white"
+                >
+                  Vider le panier
+                </button>
+              </div>
+            </section>
+
+            <aside className="lg:sticky lg:top-24">
+              <div className="rounded-[22px] bg-[#efedeb] px-5 py-4.5 shadow-[0_14px_34px_rgba(15,23,42,0.05)] sm:px-5  p-3">
+                <div className="space-y-3.5 text-slate-800">
+                  <div className="flex items-center justify-between gap-4 text-[15px] ">
+                    <span>{articleCount} {articleCount > 1 ? "articles" : "article"}</span>
+                    <span className="font-semibold">{formatEuro(total)}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-4 text-[15px]">
+                    <span>Livraison</span>
+                    <span className="font-semibold">{formatEuro(shipping)}</span>
+                  </div>
+                </div>
+
+                <div className="mb-5 mt-8 h-px bg-black/10" />
+
+                <div className="flex items-center justify-between gap-4">
+                  <span className="text-base text-slate-800">Total TTC</span>
+                  <span className="text-[1.65rem] font-semibold leading-none text-slate-900">{formatEuro(grandTotal)}</span>
+                </div>
+
+                <div className="my-5 h-px bg-black/10" />
+
+                <button
+                  type="button"
+                  onClick={() => nav("/checkout")}
+                  className="inline-flex min-h-[52px] w-full items-center justify-center rounded-[8px] bg-[#2f2d31] px-6 text-sm font-semibold uppercase tracking-wide text-white transition hover:bg-[#232126]"
+                >
+                  Commander
+                </button>
+              </div>
+            </aside>
+          </div>
+        )}
       </div>
-
-      {items.length === 0 ? (
-        <div className="mt-10 rounded-2xl border border-slate-200 bg-white p-8 text-center">
-          <div className="text-slate-600">Your cart is empty.</div>
-          <Link to="/products"><Button className="mt-4">Shop products</Button></Link>
-        </div>
-      ) : (
-        <div className="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-8 space-y-3">
-            {items.map(it => (
-              <div key={it.id} className="rounded-2xl border border-slate-200 bg-white p-4 flex gap-4">
-                <div className="min-w-[90px] h-[70px] rounded-xl bg-slate-100 overflow-hidden">
-                  {/* image depuis product */}
-                  {it.variant?.product?.images?.[0]?.image_path ? (
-                    <img src={resolveMediaUrl(it.variant.product.images[0].image_path)} alt="" className="w-full h-full object-cover" />
-                  ) : null}
-                </div>
-
-                <div className="flex-1">
-                  <div className="font-bold">{it.variant?.product?.name || "Product"}</div>
-                  <div className="text-xs text-slate-500 mt-1">
-                    Variant: {[it.variant?.color, it.variant?.finish, it.variant?.capacity].filter(Boolean).join(" • ")}
-                  </div>
-
-                  <div className="mt-3 flex items-center gap-3">
-                    <input
-                      type="number"
-                      min={1}
-                      value={it.quantity}
-                      onChange={(e)=>updateQty(it.id, Math.max(1, Number(e.target.value || 1)))}
-                      className="w-20 rounded-xl border border-slate-200 px-3 py-2 text-sm"
-                    />
-                    <Button variant="ghost" onClick={() => remove(it.id)}>Remove</Button>
-                  </div>
-                </div>
-
-                <div className="text-right">
-                  <div className="text-xs text-slate-500">Unit</div>
-                  <Price value={it.unit_price} />
-                  <div className="mt-2 text-xs text-slate-500">Subtotal</div>
-                  <div className="font-semibold">
-                    {(Number(it.unit_price) * it.quantity).toFixed(2)} USD
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="lg:col-span-4">
-            <div className="rounded-2xl border border-slate-200 bg-white p-5">
-              <div className="font-semibold">Summary</div>
-              <div className="mt-4 flex items-center justify-between text-sm">
-                <span className="text-slate-600">Total</span>
-                <span className="text-lg font-black">{total.toFixed(2)} USD</span>
-              </div>
-
-              <Button className="mt-5 w-full" onClick={() => nav("/checkout")}>
-                Go to checkout
-              </Button>
-
-              <Link to="/products" className="block mt-3">
-                <Button variant="soft" className="w-full">Continue shopping</Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      )}
-    </Container>
+    </div>
   );
 }

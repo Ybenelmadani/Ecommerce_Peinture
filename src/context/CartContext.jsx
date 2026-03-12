@@ -4,6 +4,14 @@ import { useAuth } from "./AuthContext";
 
 const CartContext = createContext(null);
 
+function shouldAutoOpenCartDrawer() {
+  if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
+    return false;
+  }
+
+  return !window.matchMedia("(hover: hover) and (pointer: fine) and (min-width: 1024px)").matches;
+}
+
 export function CartProvider({ children }) {
   const { user } = useAuth();
 
@@ -36,7 +44,10 @@ export function CartProvider({ children }) {
       quantity,
     });
     setItems(res.data?.items || []);
-    setOpen(true);
+
+    if (shouldAutoOpenCartDrawer()) {
+      setOpen(true);
+    }
   }, []);
 
   const updateQty = useCallback(async (cartItemId, quantity) => {
