@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useLayoutEffect } from "react";
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
 
 import Header from "./components/layout/Header";
@@ -11,7 +11,9 @@ import Products from "./pages/Products";
 import ProductDetails from "./pages/ProductDetails";
 import CartPage from "./pages/CartPage";
 import Checkout from "./pages/Checkout";
+import MyAccount from "./pages/MyAccount";
 import MyOrders from "./pages/MyOrders";
+import MyWishlist from "./pages/MyWishlist";
 import InfoPage from "./pages/InfoPage";
 import NotFound from "./pages/NotFound";
 
@@ -35,14 +37,18 @@ import Users from "./pages/admin/Users";
 import Reviews from "./pages/admin/Reviews";
 import AdminRoute from "./routes/AdminRoute";
 import { useAuth } from "./context/AuthContext";
+import { useI18n } from "./context/I18nContext";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
-function StoreOnlyRoute({ children }) {
+function GuestOnlyRoute({ children }) {
   const { user, booting } = useAuth();
 
   if (booting) return null;
 
-  if (String(user?.role || "").toLowerCase() === "admin") {
-    return <Navigate to="/admin" replace />;
+  if (user) {
+    const destination = String(user?.role || "").toLowerCase() === "admin" ? "/admin" : "/";
+    return <Navigate to={destination} replace />;
   }
 
   return children;
@@ -51,9 +57,15 @@ function StoreOnlyRoute({ children }) {
 function AppContent() {
   const loc = useLocation();
   const { booting } = useAuth();
+  const { pick } = useI18n();
   const isAdminArea = loc.pathname.startsWith("/admin");
+  const ui = pick({
+    fr: { loading: "Chargement..." },
+    en: { loading: "Loading..." },
+    ar: { loading: "جارٍ التحميل..." },
+  });
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     window.scrollTo(0, 0);
   }, [loc.pathname]);
 
@@ -61,7 +73,7 @@ function AppContent() {
     return (
       <div className="min-h-screen bg-slate-50">
         <div className="mx-auto max-w-7xl px-4 py-8 text-sm text-slate-600 sm:px-6 lg:px-8">
-          Loading...
+          {ui.loading}
         </div>
       </div>
     );
@@ -76,40 +88,54 @@ function AppContent() {
         {/* =======================
             PUBLIC STORE ROUTES
         ======================== */}
-        <Route path="/" element={<StoreOnlyRoute><Home /></StoreOnlyRoute>} />
-        <Route path="/products" element={<StoreOnlyRoute><Products /></StoreOnlyRoute>} />
-        <Route path="/products/:id" element={<StoreOnlyRoute><ProductDetails /></StoreOnlyRoute>} />
-        <Route path="/cart" element={<StoreOnlyRoute><CartPage /></StoreOnlyRoute>} />
+        <Route path="/" element={<Home />} />
+        <Route path="/products" element={<Products />} />
+        <Route path="/products/:id" element={<ProductDetails />} />
+        <Route path="/cart" element={<CartPage />} />
 
         {/* =======================
             AUTH ROUTES
         ======================== */}
-        <Route path="/login" element={<StoreOnlyRoute><Login /></StoreOnlyRoute>} />
-        <Route path="/register" element={<StoreOnlyRoute><Register /></StoreOnlyRoute>} />
+        <Route path="/login" element={<GuestOnlyRoute><Login /></GuestOnlyRoute>} />
+        <Route path="/register" element={<GuestOnlyRoute><Register /></GuestOnlyRoute>} />
+
+        <Route path="/forgot-password" element={<GuestOnlyRoute><ForgotPassword /></GuestOnlyRoute>} />
+        <Route path="/reset-password" element={<GuestOnlyRoute><ResetPassword /></GuestOnlyRoute>} />
 
         {/* =======================
             PROTECTED STORE ROUTES
         ======================== */}
         <Route
           path="/checkout"
+          element={<Checkout />}
+        />
+
+        <Route
+          path="/my-account"
           element={
-            <StoreOnlyRoute>
-              <Checkout />
-            </StoreOnlyRoute>
+            <ProtectedRoute>
+              <MyAccount />
+            </ProtectedRoute>
           }
         />
 
         <Route
           path="/my-orders"
           element={
-            <StoreOnlyRoute>
-              <ProtectedRoute>
-                <MyOrders />
-              </ProtectedRoute>
-            </StoreOnlyRoute>
+            <ProtectedRoute>
+              <MyOrders />
+            </ProtectedRoute>
           }
         />
-        <Route path="/info/:slug" element={<StoreOnlyRoute><InfoPage /></StoreOnlyRoute>} />
+        <Route
+          path="/my-wishlist"
+          element={
+            <ProtectedRoute>
+              <MyWishlist />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/info/:slug" element={<InfoPage />} />
 
         {/* =======================
             ADMIN ROUTES (PROTECTED + ROLE)

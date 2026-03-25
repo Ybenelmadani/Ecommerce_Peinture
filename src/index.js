@@ -5,13 +5,22 @@ import "./index.css";
 
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
+import { I18nProvider } from "./context/I18nContext";
+import { ToastProvider } from "./context/ToastContext";
+import { WishlistProvider } from "./context/WishlistContext";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <AuthProvider>
-      <CartProvider>
-        <App />
-      </CartProvider>
-    </AuthProvider>
+    <I18nProvider>
+      <ToastProvider>
+        <AuthProvider>
+          <WishlistProvider>
+            <CartProvider>
+              <App />
+            </CartProvider>
+          </WishlistProvider>
+        </AuthProvider>
+      </ToastProvider>
+    </I18nProvider>
   </React.StrictMode>
 );
