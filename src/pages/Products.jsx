@@ -396,7 +396,6 @@ export default function Products() {
     <Container className="py-8">
       <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.32em] text-slate-500">Catalogue</p>
           <p className="text-[11px] font-semibold uppercase tracking-[0.32em] text-slate-500">{ui.eyebrow}</p>
           <h1 className="mt-1 text-3xl font-black tracking-tight text-slate-950 md:text-[2rem]">{ui.title}</h1>
           <p className="mt-1 max-w-2xl text-sm text-slate-600">{ui.subtitle}</p>

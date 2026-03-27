@@ -118,6 +118,7 @@ export default function ProductsAdmin() {
       stock: "Stock",
       barcode: "Code-barres",
       action: "Action",
+      showProduct: "Voir le produit",
       edit: "Modifier",
       delete: "Supprimer",
       total: "Total",
@@ -192,6 +193,7 @@ export default function ProductsAdmin() {
       stock: "Stock",
       barcode: "Barcode",
       action: "Action",
+      showProduct: "Show product",
       edit: "Edit",
       delete: "Delete",
       total: "Total",
@@ -266,6 +268,7 @@ export default function ProductsAdmin() {
       stock: "المخزون",
       barcode: "الباركود",
       action: "الإجراء",
+      showProduct: "عرض المنتج",
       edit: "تعديل",
       delete: "حذف",
       total: "الإجمالي",
@@ -943,6 +946,9 @@ export default function ProductsAdmin() {
                       </td>
                       <td style={{ ...TABLE_CELL_STYLE, borderRight: "1px solid #e2e8f0", borderTopRightRadius: "18px" }}>
                         <div style={{ display: "inline-flex", gap: "10px", alignItems: "center", padding: "8px", borderRadius: "16px", background: "#f8fafc", border: "1px solid #dbe4ee" }}>
+                          <Link to={`/products/${p.id}`} style={{ padding: "9px 14px", borderRadius: "12px", background: "#fff", color: "#0f172a", fontWeight: 800, textDecoration: "none", border: "1px solid #cbd5e1" }}>
+                            {ui.showProduct}
+                          </Link>
                           <Link to={`/admin/products/${p.id}/edit`} state={{ from: `${location.pathname}${location.search}` }} style={{ padding: "9px 14px", borderRadius: "12px", background: "#0f172a", color: "#fff", fontWeight: 800, textDecoration: "none", boxShadow: "0 10px 20px rgba(15, 23, 42, 0.12)" }}>
                             {ui.edit}
                           </Link>

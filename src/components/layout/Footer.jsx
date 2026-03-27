@@ -61,7 +61,7 @@ export default function Footer() {
       privacy: "Politique de confidentialite",
       cookies: "Politique de cookies",
       customerService: "Service client",
-      hours: "9h - 18h Lun - Ven",
+      hours: "10h - 20h Lun - Dim",
     },
     en: {
       joinCommunity: "Join the community",
@@ -91,7 +91,7 @@ export default function Footer() {
       privacy: "Privacy Policy",
       cookies: "Cookie Policy",
       customerService: "Customer Service",
-      hours: "9AM - 6PM Mon - Fri",
+      hours: "10AM - 8PM Mon - Sun",
     },
     ar: {
       joinCommunity: "انضم إلى المجتمع",
@@ -121,12 +121,12 @@ export default function Footer() {
       privacy: "سياسة الخصوصية",
       cookies: "سياسة ملفات الارتباط",
       customerService: "خدمة العملاء",
-      hours: "9 صباحًا - 6 مساءً من الإثنين إلى الجمعة",
+      hours: " من الإثنين إلى الأحد من الساعة 10 صباحا إلى الساعة 8مساء"
     },
   });
 
   const socialLinks = [
-    { label: "Facebook", href: "https://www.facebook.com/adwart.marrakech", icon: FacebookIcon },
+    { label: "Facebook", href: "https://web.facebook.com/profile.php?id=61577767928995", icon: FacebookIcon },
     {
       label: "Instagram",
       href: "https://www.instagram.com/adwart.marrakech?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==",

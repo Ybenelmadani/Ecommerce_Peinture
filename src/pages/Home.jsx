@@ -801,7 +801,7 @@ export default function Home() {
               </div>
             </Reveal>
 
-            <div className="mt-6 overflow-hidden shadow-sm md:mx-[-18px] lg:mx-[-28px]">
+            <div className="mt-16 overflow-hidden shadow-sm md:mx-[-18px] lg:mx-[-28px]">
               <video
                 className="h-[300px] w-full object-cover md:h-[430px] lg:h-[500px]"
                 src="/media/hero-video.mp4"

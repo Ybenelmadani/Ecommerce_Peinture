@@ -61,6 +61,7 @@ export default function Brands() {
       price: "Prix",
       stock: "Stock",
       image: "Image",
+      showProduct: "Voir le produit",
       editProduct: "Modifier le produit",
       deleteProduct: "Supprimer le produit",
       confirmDeleteProduct: "Supprimer ce produit ?",
@@ -110,6 +111,7 @@ export default function Brands() {
       price: "Price",
       stock: "Stock",
       image: "Image",
+      showProduct: "Show product",
       editProduct: "Edit product",
       deleteProduct: "Delete product",
       confirmDeleteProduct: "Delete this product?",
@@ -159,6 +161,7 @@ export default function Brands() {
       price: "السعر",
       stock: "المخزون",
       image: "الصورة",
+      showProduct: "عرض المنتج",
       editProduct: "تعديل المنتج",
       deleteProduct: "حذف المنتج",
       confirmDeleteProduct: "حذف هذا المنتج؟",
@@ -621,6 +624,12 @@ export default function Brands() {
                                 </div>
 
                                 <div style={{ display: "flex", gap: "8px", justifyContent: isRtl ? "flex-end" : "flex-start", flexWrap: "wrap" }}>
+                                  <Link
+                                    to={`/products/${product.id}`}
+                                    style={{ padding: "8px 12px", border: "1px solid #cbd5e1", borderRadius: "8px", background: "#fff", color: "#0f172a", fontWeight: 700, textDecoration: "none" }}
+                                  >
+                                    {ui.showProduct}
+                                  </Link>
                                   <button
                                     onClick={() => navigate(`/admin/products/${product.id}/edit`, { state: { from: currentPath } })}
                                     style={{ padding: "8px 12px", border: 0, borderRadius: "8px", background: "#0f172a", color: "#fff", fontWeight: 700 }}
